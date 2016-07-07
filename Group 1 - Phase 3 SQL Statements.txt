@@ -1,0 +1,105 @@
+
+PHASE 3 SQL STATEMENTS - GROUP 1
+
+MEMBERS: Kishan Chudasama, Kevin Rose, Emily Rothenbacher, Hudson Bilbrey
+
+
+1. Log In:
+
+Check Username/Password:
+
+("SELECT * from user WHERE username = %s")
+
+2. New User Registration:
+
+Add New User:
+(“INSERT INTO user (username, password) VALUES (%s, %s)”)
+
+Add into User_Customer Table: 
+("INSERT INTO user_customer (username, email, is_student) VALUES (%s, %s, %s)")
+
+3. Student Discount Option:
+
+If user provides a valid email:
+("UPDATE user_customer SET is_student=1 WHERE username=%s")
+
+4. View Train Schedule:
+
+Get all Train Numbers:
+("SELECT trainnumber FROM trainroute")
+
+Get Stops for Train Route:
+("SELECT * FROM stop WHERE trainnumber=%s ORDER BY arrival_time ASC")
+
+5. Make Reservation:
+
+Get Route Information:
+("SELECT * FROM trainroute ")
+
+Get Route Stops Information:
+ ("SELECT * FROM stop WHERE trainnumber=%s ORDER BY arrival_time ASC")
+
+Create Reservation:
+("INSERT INTO reservation (reservationid, username, cardnumber, is_cancelled, total_cost) VALUES(%s, %s, %s, %s, %s)")
+
+Add into Reserves Table, connecting the Reservation with the Train Route:
+("INSERT INTO reserves (trainnumber, reservationid, class, departure_date, passenger_name, number_of_bags, departs_from, arrives_at) VALUES(%s, %s, %s, %s, %s, %s, %s, %s)")
+
+6. Payment Info:
+
+Get All Available Cards:
+("SELECT * FROM payment_info WHERE username=%s")
+
+Add New Card:
+("INSERT INTO payment_info (cardnumber, cvv, exp_date, name_on_card, username) VALUES(%s, %s, %s, %s, %s) ")
+
+Delete a Card:
+
+(“DELETE FROM payment_info WHERE cardnumber = %s”)
+
+7. Confirm Reservation Screen:
+
+Get All Existing Reservation ID’s:
+("SELECT reservationid FROM reservation ")
+
+8. Update Reservation:
+
+Update Cost:
+("UPDATE reservation SET total_cost = total_cost + 50 WHERE reservationid=%s")
+
+Update Date:
+("UPDATE reserves SET departure_date = %s WHERE reservationid=%s" AND train number = %s)
+
+9. Cancel Reservation:
+
+("UPDATE reservation SET is_cancelled=1, total_cost=%s WHERE reservationid=%s")
+
+10. View Review:
+
+Get Reviews for Specified Train Number:
+
+("SELECT comment, rating FROM review WHERE trainnumber=%s")
+
+11. Give Review:
+
+Add a Review into Database:
+
+("INSERT INTO review (reviewid, comment, rating, username, trainnumber) VALUES(%s, %s, %s, %s, %s)")
+	
+12. Revenue Report:
+	
+("SELECT MONTH(departure_date) AS Month, SUM(total_cost) FROM reserves NATURAL JOIN reservation WHERE MONTH(departure_date) >= MONTH(DATE_SUB(CURDATE(), INTERVAL 2 MONTH)) AND MONTH(departure_date) <= MONTH(CURDATE()) GROUP BY Month")
+
+13. Popular Report:
+
+Popular Report for 2 Months Back:
+
+("SELECT trainnumber, COUNT(reservationid) FROM reserves NATURAL JOIN reservation WHERE MONTH(departure_date) = MONTH(DATE_SUB(CURDATE(), INTERVAL 2 MONTH)) AND reservation.is_cancelled = 0 GROUP BY trainnumber ORDER BY COUNT(reservationid) DESC LIMIT 3")
+	
+Popular Report for 1 Month Back:
+
+("SELECT trainnumber, COUNT(reservationid) FROM reserves NATURAL JOIN reservation WHERE MONTH(departure_date) = MONTH(DATE_SUB(CURDATE(), INTERVAL 1 MONTH)) AND reservation.is_cancelled = 0 GROUP BY trainnumber ORDER BY COUNT(reservationid) DESC LIMIT 3")
+
+Popular Report for Current Month:
+
+("SELECT trainnumber, COUNT(reservationid) FROM reserves NATURAL JOIN reservation WHERE MONTH(departure_date) = MONTH(CURDATE()) AND reservation.is_cancelled = 0 GROUP BY trainnumber ORDER BY COUNT(reservationid) DESC LIMIT 3")
